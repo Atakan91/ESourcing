@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+
+  sourcingdb:
+    container_name: sourcingdb
+    restart: always
+    volumes:
+        - ${WEBAPP_STORAGE_HOME}/site:/data/db
+    ports:
+        - "27017:27017"
+
+  esourcing.persons:
+    container_name: esourcingpersons
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:443;http://+:80
+      - "PersonDatabaseSettings:ConnectionString=mongodb://sourcingdb:27017"
+    depends_on:
+        - sourcingdb
+
+    volumes:
+      - ${APPDATA}/ASP.NET/Http:/root/.aspnet/http/
+      - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+
+    ports:
+      - "8000:80"
+    
+  esourcing.reports:
+    container_name: esourcingreports 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ReportDatabaseSettings:ConnectionString=mongodb://sourcingdb:27017"
+    depends_on:
+        - sourcingdb
+    volumes:
+      - ${APPDATA}/ASP.NET/Http:/root/.aspnet/http/
+      - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+    ports:
+      - "8001:80"
+

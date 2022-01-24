@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  sourcingdb:
+    image: mongo
+
+  esourcing.persons:
+    image: ${DOCKER_REGISTRY-}esourcingpersons
+    build:
+      context: .
+      dockerfile: ESourcing.Persons/Dockerfile
+  esourcing.reports:
+    image: ${DOCKER_REGISTRY-}esourcingreports
+    build:
+      context: .
+      dockerfile: ESourcing.Reports/Dockerfile
+
